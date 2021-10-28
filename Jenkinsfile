@@ -7,24 +7,12 @@ pipeline {
                     properties([
                         parameters([
                             choice(
-                                choices: ['ONE', 'TWO'],
-                                name: 'PARAMETER_01'
-                            ),
-                            booleanParam(
-                                defaultValue: true,
-                                description: '',
-                                name: 'BOOLEAN'
-                            ),
-                            text(
-                                defaultValue: '''
-                                this is a multi-line
-                                string parameter example
-                                ''',
-                                 name: 'MULTI-LINE-STRING'
+                                choices: ['Lab1', 'Lab2','Lab3'],
+                                name: 'lab'
                             ),
                             string(
-                                defaultValue: 'scriptcrunch',
-                                name: 'STRING-PARAMETER',
+                                defaultValue: 'https://github.com/balaant/test-python',
+                                name: 'git_url',
                                 trim: true
                             )
                         ])
@@ -32,5 +20,16 @@ pipeline {
                 }
             }
         }
+        stage('Build') {
+            steps {
+                git clone git_url
+            }
+        }
+        stage('Test prepare') {
+            steps {
+                ls -l
+            }
+        }
+
     }
 }
