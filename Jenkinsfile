@@ -21,14 +21,10 @@ pipeline {
             }
         }
         stage('Build') {
-            steps {
-                git clone git_url
-            }
+           git clone git_url
         }
         stage('Test prepare') {
-            steps {
-                ls -l
-            }
+            ls -l
         }
 
     }
