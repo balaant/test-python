@@ -1,1 +1,1 @@
-find */ -name *.py -type f | xargs pycodestyle --show-source {}
+find $1 -name *.py -type f | xargs pycodestyle --show-source {}

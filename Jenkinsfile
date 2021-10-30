@@ -19,19 +19,15 @@ pipeline {
         stage('Test') {
             steps {
                 sh "curl -sS -o testLab/${params.Lab}/Test${params.Lab}.py https://raw.githubusercontent.com/balaant/test-python/master/tests/Test${params.Lab}.py"
-                sh "python3 testLab/${params.Lab}/Test${params.Lab}.py > test.log"
+                sh "python3 testLab/${params.Lab}/Test${params.Lab}.py"
             }
         }
         stage('Codestyle') {
             steps {
-                sh "curl -sS -o testLab/${params.Lab}/checkstyle.sh https://raw.githubusercontent.com/balaant/test-python/master/checkstyle.sh"
-                sh "sh testLab/${params.Lab}/checkstyle.sh > checkstyle.log"
+                sh "curl -sS -o checkstyle.sh https://raw.githubusercontent.com/balaant/test-python/master/checkstyle.sh"
+                sh "sh checkstyle.sh testLab/${params.Lab}"
             }
         }
     }
-    post {
-        always {
-            archiveArtifacts artifacts: '**/*.log'
-        }
-    }
+
 }
