@@ -1,31 +1,35 @@
 pipeline {
-    agent any
+    agent { label 'master' }
+    parameters {
+       string(name: 'URL', defaultValue: 'https://github.com/balaant/test-python', description: 'repository URL')
+       choice(name: 'Lab', choices: ['Lab1','Lab2','Lab3'], description:  'Pick a lab')
+
+
+    }
     stages {
-        stage('Setup parameters') {
+        stage('prepare') {
             steps {
                 script {
-                    properties([
-                        parameters([
-                            choice(
-                                choices: ['Lab1', 'Lab2','Lab3'],
-                                name: 'lab'
-                            ),
-                            string(
-                                defaultValue: 'https://github.com/balaant/test-python',
-                                name: 'git_url',
-                                trim: true
-                            )
-                        ])
-                    ])
+                    sh "git clone ${params.URL} testLab"
                 }
             }
         }
-        stage('Build') {
-           git clone git_url
+        stage('Test') {
+            steps {
+                sh "curl -sS -o testLab/${params.Lab}/Test${params.Lab}.py https://raw.githubusercontent.com/balaant/test-python/master/tests/Test${params.Lab}.py"
+                sh "python3 testLab/${params.Lab}/Test${params.Lab}.py > tests.log"
+            }
         }
-        stage('Test prepare') {
-            ls -l
+        stage('Codestyle') {
+            steps {
+                sh 'pycodestyle --show-source --show-pep8 **/*.py >> checkstyle.log'
+            }
         }
-
+    }
+    post {
+        always {
+            archiveArtifacts artifacts: '**/*.log'
+            sh "rm -r testLab"
+        }
     }
 }
