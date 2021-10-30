@@ -30,5 +30,15 @@ pipeline {
                 }
             }
         }
+         stage('Test') {
+            steps {
+                echo '<h1>Test</h1>' > test.html
+            }
+        }
+        post {
+                always {
+                    archiveArtifacts artifacts: 'test.html'
+                }
+            }
     }
 }
