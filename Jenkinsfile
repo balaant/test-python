@@ -10,26 +10,28 @@ pipeline {
         stage('prepare') {
             steps {
                 script {
+                    sh "rm -r testLab"
                     sh "git clone ${params.URL} testLab"
                 }
             }
         }
+
         stage('Test') {
             steps {
                 sh "curl -sS -o testLab/${params.Lab}/Test${params.Lab}.py https://raw.githubusercontent.com/balaant/test-python/master/tests/Test${params.Lab}.py"
-                sh "python3 testLab/${params.Lab}/Test${params.Lab}.py > tests.log"
+                sh "python3 testLab/${params.Lab}/Test${params.Lab}.py > test.log"
             }
         }
         stage('Codestyle') {
             steps {
-                sh 'pycodestyle --show-source --show-pep8 **/*.py >> checkstyle.log'
+                sh "curl -sS -o testLab/${params.Lab}/checkstyle.sh https://raw.githubusercontent.com/balaant/test-python/master/checkstyle.sh"
+                sh "sh testLab/${params.Lab}/checkstyle.sh > checkstyle.log"
             }
         }
     }
     post {
         always {
             archiveArtifacts artifacts: '**/*.log'
-            sh "rm -r testLab"
         }
     }
 }
