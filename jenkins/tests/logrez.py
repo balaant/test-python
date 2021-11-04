@@ -19,13 +19,15 @@ if state == "init":
     try:
         with con:
             con.execute("insert into stat(nme,labid,grp,link,stat) values (?,?,?,?,'initial')", (name,id,group,link))
-    except sqlite3.IntegrityError:
+    except sqlite3.IntegrityError as e:
         print("Already exists "+name+" "+group+" Lab"+id)
+        print(e)
 if state == "pass":
     try:
         with con:
             con.execute("update stat set stat='passed' where nme=? and id=? and grp=?", (name,id,group))
-    except sqlite3.IntegrityError:
+    except sqlite3.IntegrityError as e:
         print("failed to update "+name+" "+group+" Lab"+id)
+        print(e)
 
 
