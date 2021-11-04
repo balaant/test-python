@@ -1,0 +1,1 @@
+docker run --name jenkins_for_labs-1 -p 8080:8080 jenkins_for_labs:3.1

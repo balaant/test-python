@@ -1,0 +1,1 @@
+docker build -t jenkins_for_labs:3.1 .
