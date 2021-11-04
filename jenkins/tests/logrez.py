@@ -1,6 +1,6 @@
 import sqlite3
 import sys
-con = sqlite3.connect('labsstat.db')
+con = sqlite3.connect('/tests/labsstat.db')
 name = sys.argv[1]
 id = sys.argv[2]
 group = sys.argv[3]

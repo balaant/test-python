@@ -3,10 +3,8 @@ pipeline {
     parameters {
        validatingString(name: 'URL', defaultValue: 'https://github.com/balaant/test-python', regex: /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?)/,  description: 'Ссылка на гитхаб')
        choice(name: 'Lab', choices: ['1','2','3'], description:  'Номер лабы')
-       validatingString(name: 'Name', defaultValue: '', description:  'ФИО', regex: /^[А-Я]+$/ )
-       validatingString(name: 'Group', defaultValue: '', description:  'Группа', regex: /^[А-Я]+\-[0-9А-Яа-я]+$/)
-
-
+       validatingString(name: 'Name', defaultValue: '', description:  'ФИО', regex: /^[А-Я][а-я]+$/ )
+       validatingString(name: 'Group', defaultValue: '', description:  'Группа', regex: /^[А-Я0-9]+\-[0-9А-Яа-я]+$/)
     }
     stages {
         stage("Build") {
@@ -27,18 +25,18 @@ pipeline {
                 }
             }
         }
-
+        stage('Codestyle') {
+            steps {
+                sh "sh /tests/checkstyle.sh testLab/Lab${params.Lab}"
+            }
+        }
         stage('Test') {
             steps {
                 sh "cp /tests/TestLab${params.Lab}.py testLab/Lab${params.Lab}/"
                 sh "python3 testLab/Lab${params.Lab}/TestLab${params.Lab}.py"
             }
         }
-        stage('Codestyle') {
-            steps {
-                sh "sh /tests/checkstyle.sh testLab/Lab${params.Lab}"
-            }
-        }
+
         stage('Log success') {
              steps {
                  sh "python3 /tests/logrez.py "+ params['Name']+" "+params['Lab']+" "+params['Group']+" "+params['URL']+" pass"
